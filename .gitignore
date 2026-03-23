@@ -1,0 +1,14 @@
+﻿.venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+output/
+inputs/logs/
+inputs/pcap/
+inputs/gateway_exports/
+*.json
+!inputs/baseline.json.example
+node_modules/
+.DS_Store
+.venv-1/
