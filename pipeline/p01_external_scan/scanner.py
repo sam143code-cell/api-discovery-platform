@@ -71,9 +71,7 @@ SENTINEL_TEMPLATES = [
     "/api/v1/users/____fake_{hex}", "/____fake_{hex}/items",
 ]
 
-# ---------------------------------------------------------------------------
-# Dotfile / Apache-config noise filter (used in brute-force)
-# ---------------------------------------------------------------------------
+
 EXCLUDE_EXTENSIONS = {
     '.htm', '.html', '.htaccess', '.htpasswd', '.hta', '.htc', '.hts',
     '.htn', '.htx', '.htlm', '.htgroup', '.htuser', '.htacess',
@@ -548,7 +546,7 @@ class ExternalScanner:
         print(f"      Brute-force: {found} confirmed paths")
 
     async def _probe_path(self, client, path):
-        # Skip Apache dotfile variants and plain HTML paths — not API endpoints
+       
         if _is_dotfile_noise(path):
             return False
 

@@ -6,9 +6,9 @@ from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 from datetime import datetime
 
-# ── Format signatures ──────────────────────────────────────────────────────────
+
 NGINX_CLF   = re.compile(r'(?P<ip>[\d\.]+)\s+-\s+-\s+\[.+?\]\s+"(?P<method>\w+)\s+(?P<path>[^\s"]+)\s+HTTP[^"]*"\s+(?P<status>\d+)\s+(?P<size>\d+)(?:\s+"[^"]*"\s+"(?P<ua>[^"]*)")?')
-NGINX_JSON  = None   # detected dynamically
+NGINX_JSON  = None  
 APACHE_CLF  = NGINX_CLF
 KONG_LOG    = re.compile(r'"request":\{"uri":"(?P<path>[^"]+)","method":"(?P<method>[^"]+)".*?"status":(?P<status>\d+)')
 AWS_ALB     = re.compile(r'\S+\s+\S+\s+\S+\s+\S+:\d+\s+\S+:\d+\s+[\d\.]+\s+[\d\.]+\s+[\d\.]+\s+(?P<status>\d+)\s+\d+\s+\d+\s+\d+\s+"(?P<method>\w+)\s+(?P<url>https?://[^\s]+)\s+HTTP')
@@ -21,7 +21,7 @@ def _detect_format(sample_lines: List[str]) -> str:
         line = line.strip()
         if not line:
             continue
-        # JSON log
+       
         if line.startswith("{"):
             try:
                 d = json.loads(line)
@@ -36,16 +36,16 @@ def _detect_format(sample_lines: List[str]) -> str:
                 return "json_generic"
             except Exception:
                 pass
-        # W3C IIS
+        
         if line.startswith("#Fields:") or "cs-method" in line:
             return "w3c"
-        # AWS ALB
+       
         if re.match(r'^\w+\s+\d{4}-\d{2}-\d{2}T', line) and "HTTP/1" in line:
             return "aws_alb"
-        # Nginx/Apache CLF
+        
         if NGINX_CLF.match(line):
             return "clf"
-        # Cloudflare
+       
         if '"RayID"' in line or '"rayId"' in line or ('"status"' in line and '"method"' in line):
             return "cloudflare_json"
     return "unknown"
@@ -203,7 +203,7 @@ class LogAnalyzer:
                     if not line:
                         continue
 
-                    # W3C fields header
+                    
                     if line.startswith("#Fields:"):
                         w3c_fields = line.replace("#Fields:", "").strip().split()
                         continue
@@ -224,7 +224,7 @@ class LogAnalyzer:
                     elif fmt == "cloudflare_json":
                         entry = _parse_cloudflare_json(line)
                     else:
-                        # Try all parsers as fallback
+                        
                         for parser in [_parse_clf, _parse_json_flat, _parse_kong_json]:
                             entry = parser(line)
                             if entry:

@@ -57,7 +57,7 @@ async def run(cfg: dict, mode_override: str = None):
     store = APIStore()
     domains = load_domains(cfg)
 
-    # ── Phase 1: External Scan ─────────────────────────────────────────────
+    
     if pipeline.get("external_scan", True) and domains:
         print(f"[1/9] External Scan ({len(domains)} domain(s))")
         scan_cfg = {
@@ -73,7 +73,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("[1/9] External Scan — disabled")
 
-    # ── Phase 2: Source Code Scan ──────────────────────────────────────────
+   
     if pipeline.get("source_scan", True):
         print("\n[2/9] Source Code Scan")
         source_cfg = {**cfg.get("source_scan", {}),
@@ -83,7 +83,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("\n[2/9] Source Code Scan — disabled")
 
-    # ── Phase 3: Log Analysis ──────────────────────────────────────────────
+    
     if pipeline.get("log_analysis", True):
         print("\n[3/9] Log Analysis")
         log_cfg = {"logs_dir": cfg.get("inputs", {}).get("logs_dir", "inputs/logs")}
@@ -92,7 +92,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("\n[3/9] Log Analysis — disabled")
 
-    # ── Phase 4: Traffic Analysis ──────────────────────────────────────────
+ 
     if pipeline.get("traffic_analysis", True):
         print("\n[4/9] Traffic Analysis (PCAP + Live Agent)")
         traffic_cfg = {
@@ -104,7 +104,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("\n[4/9] Traffic Analysis — disabled")
 
-    # ── Phase 5: Gateway Interrogation ────────────────────────────────────
+   
     if pipeline.get("gateway_query", True):
         print("\n[5/9] Gateway & Infrastructure Interrogation")
         gw_cfg = {
@@ -120,7 +120,7 @@ async def run(cfg: dict, mode_override: str = None):
     print(f"\n  Discovery complete: {counts_before['total']} total endpoints found")
     print(f"  Sources: external_scan, source_code, logs, traffic, gateways\n")
 
-    # ── Phase 6: Classification ────────────────────────────────────────────
+   
     if pipeline.get("classifier", True):
         print("[6/9] Classification (Valid / Shadow / New / Rogue)")
         classifier = Classifier(store, cfg)
@@ -128,7 +128,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("[6/9] Classification — disabled")
 
-    # ── Phase 7: OWASP Assessment ──────────────────────────────────────────
+    
     if pipeline.get("owasp", True):
         print(f"\n[7/9] OWASP API Top 10 Assessment [mode={mode}]")
         owasp = OWASPScanner(store, cfg)
@@ -136,7 +136,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("\n[7/9] OWASP Assessment — disabled")
 
-    # ── Phase 8: Enrichment ────────────────────────────────────────────────
+    
     if pipeline.get("enrichment", True):
         print("\n[8/9] Enrichment (auth, sensitivity, CVE, risk scoring)")
         enricher = Enricher(store, cfg)
@@ -144,7 +144,7 @@ async def run(cfg: dict, mode_override: str = None):
     else:
         print("\n[8/9] Enrichment — disabled")
 
-    # ── Phase 9: Report Generation ─────────────────────────────────────────
+   
     if pipeline.get("reporter", True):
         print("\n[9/9] Generating Reports (JSON + PDF + Word)")
         reporter = Reporter(store, cfg)
@@ -155,7 +155,7 @@ async def run(cfg: dict, mode_override: str = None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="API Discovery Platform — Production Grade"
+        description="API Discovery Platform "
     )
     parser.add_argument("--config", default="config.yaml",
                         help="Path to config.yaml (default: config.yaml)")
@@ -169,14 +169,14 @@ def main():
 
     cfg = load_config(args.config)
 
-    # Single domain override
+    
     if args.domain:
         domains_file = cfg.get("inputs", {}).get("domains_file", "inputs/domains.txt")
         os.makedirs(os.path.dirname(domains_file) or ".", exist_ok=True)
         with open(domains_file, "w") as f:
             f.write(args.domain + "\n")
 
-    # Disable phases from CLI
+    
     for phase in args.disable_phase:
         cfg.setdefault("pipeline", {})[phase] = False
 

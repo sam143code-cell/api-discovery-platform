@@ -78,7 +78,7 @@ class PCAPParser:
 
     def _parse_pcap(self, fpath: str) -> int:
         found = 0
-        # Try pyshark first (wraps tshark — best HTTPS support with keylog)
+        
         try:
             import pyshark
             keylog = self.cfg.get("agent", {}).get("keylog_file", "")
@@ -120,7 +120,7 @@ class PCAPParser:
         except ImportError:
             pass
 
-        # Fallback: scapy raw parsing
+        
         try:
             from scapy.all import rdpcap, TCP, Raw
             pkts = rdpcap(fpath)
@@ -187,14 +187,7 @@ class PCAPParser:
 
 
 class LiveAgent:
-    """
-    Live traffic sniffing agent.
-    TLS modes:
-      mirror   — receives already-decrypted traffic from LB mirror port
-      keylog   — uses NSS TLS key log file for decryption
-      http_only — only captures cleartext HTTP
-    Run as: python -m pipeline.p04_traffic_analysis.scanner --live
-    """
+   
 
     def __init__(self, store, cfg: dict):
         self.store = store
@@ -252,8 +245,7 @@ class LiveAgent:
             print(f"    Live agent error: {e}")
 
     async def _sniff_mirror(self, interface: str, interval: int):
-        # Mirror mode: LB sends decrypted copy here — same as HTTP sniffing
-        # but we also watch for HTTP/2 on the mirror port
+        
         await self._sniff_http_only(interface, interval)
 
     async def _sniff_keylog(self, interface: str, interval: int):

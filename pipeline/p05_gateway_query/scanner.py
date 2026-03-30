@@ -25,7 +25,7 @@ class GatewayScanner:
         if self.gateway_cfg.get("azure_apim", {}).get("enabled"):
             tasks.append(self._scan_azure())
 
-        # Always try file-based sources
+       
         tasks.append(self._scan_gateway_exports())
         tasks.append(self._scan_nginx_configs())
         tasks.append(self._scan_k8s_manifests())
@@ -170,7 +170,7 @@ class GatewayScanner:
                     else:
                         import yaml
                         data = yaml.safe_load(f)
-                # OpenAPI format
+               
                 if "paths" in data:
                     for path, methods in data["paths"].items():
                         if isinstance(methods, dict):
@@ -183,7 +183,7 @@ class GatewayScanner:
                                         tags=["gateway_registered"],
                                         evidence={"source_file": fname},
                                     )
-                # Kong deck format
+                
                 elif "services" in data:
                     for svc in data.get("services", []):
                         for route in svc.get("routes", []):

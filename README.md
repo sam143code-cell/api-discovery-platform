@@ -1,6 +1,6 @@
 # API Discovery Platform
 
-Production-grade API discovery and security evaluation platform.
+API discovery and security evaluation platform.
 Covers: external scan, source code, logs, traffic, gateways, OWASP, classification, reporting.
 
 ---
@@ -179,3 +179,17 @@ Fallback: tries all parsers. If unknown format, prints format hint.
 | `mirror` | Receives decrypted copy from LB | F5, nginx, HAProxy mirror port |
 | `keylog` | NSS key log file decryption | When LB exports TLS keys |
 | `http_only` | Plain HTTP only | Dev/internal unencrypted traffic |
+
+
+
+API_DISCOVERY_PLATFORM/
+  app/          ← all pipeline 
+  flask_backend/
+    flask_app/      
+      __init__.py
+      config.py
+      models.py
+      routes.py
+    run.py
+    requirements.txt
+  node_backend/
