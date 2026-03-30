@@ -14,7 +14,7 @@ class Engagement(db.Model):
     GeneratedAt           = db.Column(db.DateTime)
     StartedAt             = db.Column(db.DateTime)
     CompletedAt           = db.Column(db.DateTime)
-    OverallRisk           = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW","UNKNOWN"), default="UNKNOWN")
+    OverallRisk           = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"), default="UNKNOWN")
     Narrative             = db.Column(db.Text)
     TotalApis             = db.Column(db.Integer, default=0)
     InboundApiCount       = db.Column(db.Integer, default=0)
@@ -49,44 +49,44 @@ class Engagement(db.Model):
 
 
 class ApiEndpoint(db.Model):
-    __tablename__ = "ApiEndpoint"
+    __tablename__ = "api_endpoints"
 
-    EndpointId          = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    EngagementId        = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
-    ApiDirection        = db.Column(db.Enum("inbound", "outbound"), default="inbound")
-    EndpointUrl         = db.Column(db.Text, nullable=False)
-    HttpMethod          = db.Column(db.String(20), default="UNKNOWN")
-    Classification      = db.Column(db.Enum("Valid","Shadow","New","Rogue","UNCLASSIFIED"), default="UNCLASSIFIED")
-    RiskScore           = db.Column(db.Integer, default=0)
-    RiskBand            = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW"), default="LOW")
-    AuthType            = db.Column(db.String(100))
-    DataSensitivity     = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW","UNKNOWN"), default="UNKNOWN")
-    Exposure            = db.Column(db.String(50))
-    Environment         = db.Column(db.String(100))
-    FunctionalModule    = db.Column(db.String(200))
-    FunctionalType      = db.Column(db.String(100))
-    ApiVersion          = db.Column(db.String(20))
-    TechStack           = db.Column(db.String(100))
-    InferredOwner       = db.Column(db.String(200))
-    Owner               = db.Column(db.String(200))
-    BaselineStatus      = db.Column(db.String(100))
-    StatusCode          = db.Column(db.Integer)
-    ContentType         = db.Column(db.String(100))
-    ResponseSizeBytes   = db.Column(db.Integer)
-    Remediation         = db.Column(db.Text)
-    SourceFile          = db.Column(db.Text)
-    FirstSeen           = db.Column(db.DateTime)
-    LastSeen            = db.Column(db.DateTime)
-    CreatedAt           = db.Column(db.DateTime, default=datetime.utcnow)
-    UpdatedAt           = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    IsActive            = db.Column(db.SmallInteger, default=0)
+    EndpointId        = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    EngagementId      = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
+    ApiDirection      = db.Column(db.Enum("inbound", "outbound"), default="inbound")
+    EndpointUrl       = db.Column(db.Text, nullable=False)
+    HttpMethod        = db.Column(db.String(20), default="UNKNOWN")
+    Classification    = db.Column(db.Enum("Valid", "Shadow", "New", "Rogue", "UNCLASSIFIED"), default="UNCLASSIFIED")
+    RiskScore         = db.Column(db.Integer, default=0)
+    RiskBand          = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW"), default="LOW")
+    AuthType          = db.Column(db.String(100))
+    DataSensitivity   = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW", "UNKNOWN"), default="UNKNOWN")
+    Exposure          = db.Column(db.String(50))
+    Environment       = db.Column(db.String(100))
+    FunctionalModule  = db.Column(db.String(200))
+    FunctionalType    = db.Column(db.String(100))
+    ApiVersion        = db.Column(db.String(20))
+    TechStack         = db.Column(db.String(100))
+    InferredOwner     = db.Column(db.String(200))
+    Owner             = db.Column(db.String(200))
+    BaselineStatus    = db.Column(db.String(100))
+    StatusCode        = db.Column(db.Integer)
+    ContentType       = db.Column(db.String(100))
+    ResponseSizeBytes = db.Column(db.Integer)
+    Remediation       = db.Column(db.Text)
+    SourceFile        = db.Column(db.Text)
+    FirstSeen         = db.Column(db.DateTime)
+    LastSeen          = db.Column(db.DateTime)
+    CreatedAt         = db.Column(db.DateTime, default=datetime.utcnow)
+    UpdatedAt         = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    IsActive          = db.Column(db.SmallInteger, default=0)
 
 
 class DiscoverySource(db.Model):
-    __tablename__ = "DiscoverySource"
+    __tablename__ = "discovery_source"
 
     SourceId     = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    EndpointId   = db.Column(db.Integer, db.ForeignKey("ApiEndpoint.EndpointId"), nullable=False)
+    EndpointId   = db.Column(db.Integer, db.ForeignKey("api_endpoints.EndpointId"), nullable=False)
     EngagementId = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
     SourceName   = db.Column(db.String(100), nullable=False)
     CreatedAt    = db.Column(db.DateTime, default=datetime.utcnow)
@@ -95,15 +95,15 @@ class DiscoverySource(db.Model):
 
 
 class OWASPFinding(db.Model):
-    __tablename__ = "OWASPFinding"
+    __tablename__ = "owasp_findings"
 
     FindingId    = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    EndpointId   = db.Column(db.Integer, db.ForeignKey("ApiEndpoint.EndpointId"))
+    EndpointId   = db.Column(db.Integer, db.ForeignKey("api_endpoints.EndpointId"))
     EngagementId = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
     Category     = db.Column(db.String(20))
     CategoryName = db.Column(db.String(200))
     Finding      = db.Column(db.Text)
-    Severity     = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW","INFO"), default="INFO")
+    Severity     = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"), default="INFO")
     Source       = db.Column(db.String(50))
     Remediation  = db.Column(db.Text)
     EndpointUrl  = db.Column(db.Text)
@@ -113,7 +113,7 @@ class OWASPFinding(db.Model):
 
 
 class OWASPConformance(db.Model):
-    __tablename__ = "OWASPConformance"
+    __tablename__ = "owasp_conformance"
 
     ConformanceId    = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId     = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
@@ -129,7 +129,7 @@ class OWASPConformance(db.Model):
 
 
 class SecretFinding(db.Model):
-    __tablename__ = "SecretFinding"
+    __tablename__ = "secret_findings"
 
     SecretId       = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId   = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
@@ -138,7 +138,7 @@ class SecretFinding(db.Model):
     LineNumber     = db.Column(db.Integer)
     Repo           = db.Column(db.Text)
     MatchPreview   = db.Column(db.String(200))
-    Severity       = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW"), default="CRITICAL")
+    Severity       = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW"), default="CRITICAL")
     Recommendation = db.Column(db.Text)
     CreatedAt      = db.Column(db.DateTime, default=datetime.utcnow)
     UpdatedAt      = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -146,7 +146,7 @@ class SecretFinding(db.Model):
 
 
 class OutboundApi(db.Model):
-    __tablename__ = "OutboundApi"
+    __tablename__ = "outbound_api"
 
     OutboundApiId  = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId   = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
@@ -156,8 +156,8 @@ class OutboundApi(db.Model):
     HttpMethod     = db.Column(db.String(20), default="UNKNOWN")
     Integration    = db.Column(db.String(200))
     Category       = db.Column(db.String(100))
-    Exposure       = db.Column(db.Enum("External","Internal"), default="External")
-    Risk           = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW"), default="MEDIUM")
+    Exposure       = db.Column(db.Enum("External", "Internal"), default="External")
+    Risk           = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW"), default="MEDIUM")
     AuthMethod     = db.Column(db.String(100))
     SourceFiles    = db.Column(db.Text)
     LineNumber     = db.Column(db.Integer)
@@ -170,14 +170,14 @@ class OutboundApi(db.Model):
 
 
 class OutboundDependency(db.Model):
-    __tablename__ = "OutboundDependency"
+    __tablename__ = "outbound_dependency"
 
     DependencyId   = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId   = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
     Integration    = db.Column(db.String(200))
     Category       = db.Column(db.String(100))
-    Exposure       = db.Column(db.Enum("External","Internal"), default="External")
-    Risk           = db.Column(db.Enum("CRITICAL","HIGH","MEDIUM","LOW"), default="MEDIUM")
+    Exposure       = db.Column(db.Enum("External", "Internal"), default="External")
+    Risk           = db.Column(db.Enum("CRITICAL", "HIGH", "MEDIUM", "LOW"), default="MEDIUM")
     Recommendation = db.Column(db.Text)
     CreatedAt      = db.Column(db.DateTime, default=datetime.utcnow)
     UpdatedAt      = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -185,7 +185,7 @@ class OutboundDependency(db.Model):
 
 
 class PackageDependency(db.Model):
-    __tablename__ = "PackageDependency"
+    __tablename__ = "package_dependency"
 
     PackageId    = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
@@ -202,7 +202,7 @@ class CVEFinding(db.Model):
     __tablename__ = "CVEFinding"
 
     CVEId         = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    EndpointId    = db.Column(db.Integer, db.ForeignKey("ApiEndpoint.EndpointId"))
+    EndpointId    = db.Column(db.Integer, db.ForeignKey("api_endpoints.EndpointId"))
     EngagementId  = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
     CVENumber     = db.Column(db.String(50))
     Description   = db.Column(db.Text)
@@ -215,13 +215,13 @@ class CVEFinding(db.Model):
 
 
 class ScanPhaseLog(db.Model):
-    __tablename__ = "ScanPhaseLog"
+    __tablename__ = "scan_phase_log"
 
     LogId          = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId   = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
     PhaseNumber    = db.Column(db.Integer)
     PhaseName      = db.Column(db.String(100))
-    Status         = db.Column(db.Enum("running","completed","skipped","failed"), default="completed")
+    Status         = db.Column(db.Enum("running", "completed", "skipped", "failed"), default="completed")
     StartedAt      = db.Column(db.DateTime)
     CompletedAt    = db.Column(db.DateTime)
     EndpointsFound = db.Column(db.Integer, default=0)
@@ -232,12 +232,12 @@ class ScanPhaseLog(db.Model):
 
 
 class ShadowRogueRegister(db.Model):
-    __tablename__ = "ShadowRogueRegister"
+    __tablename__ = "shadow_rogue_register"
 
     RegistryId     = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EngagementId   = db.Column(db.Integer, db.ForeignKey("Engagement.EngagementId"), nullable=False)
-    EndpointId     = db.Column(db.Integer, db.ForeignKey("ApiEndpoint.EndpointId"), nullable=False)
-    Classification = db.Column(db.Enum("Shadow","Rogue"), nullable=False)
+    EndpointId     = db.Column(db.Integer, db.ForeignKey("api_endpoints.EndpointId"), nullable=False)
+    Classification = db.Column(db.Enum("Shadow", "Rogue"), nullable=False)
     RiskScore      = db.Column(db.Integer, default=0)
     ActionRequired = db.Column(db.Text)
     CreatedAt      = db.Column(db.DateTime, default=datetime.utcnow)

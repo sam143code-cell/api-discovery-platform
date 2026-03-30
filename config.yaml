@@ -91,8 +91,7 @@ source_scan:
 
 # ─── OWASP SETTINGS ───────────────────────────────────────────────────────────
 owasp:
-  # passive mode: inspect responses for indicators
-  # active mode: send test payloads (only use on non-production)
+
   test_bola: true
   test_broken_auth: true
   test_mass_assignment: true
