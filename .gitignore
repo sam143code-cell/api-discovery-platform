@@ -12,3 +12,14 @@ inputs/gateway_exports/
 node_modules/
 .DS_Store
 .venv-1/
+flask_backend/
+node_backend/
+config.yaml
+README.md 
+S.txt
+test_scan.py
+test_scan2.py
+ts.py
+
+
+
